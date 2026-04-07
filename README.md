@@ -179,6 +179,17 @@ HF subsets are nested (the smallest HF budget is a prefix of the largest), and t
 training pool is disjoint from the test set. Sampling is fully reproducible via the
 `seed` argument.
 
+> **Note on preprocessing.** The data generators return raw, unscaled arrays.
+> The encoder helpers in `src/util.py` (`encode_2fidelity_data`,
+> `encode_3fidelity_data`, `encode_5fidelity_data`) default to **min-max
+> normalization** (`preprocess_X=True`, `preprocess_Y="minmax"`) — both X and y
+> are rescaled to [0, 1] across the LF, HF, and test splits jointly.
+> The encoders also accept `preprocess_Y="standardize"` (zero-mean, unit-std)
+> or `preprocess_Y=False` to disable. We chose min-max as a safe default, but
+> there may be additional gains from standardization or other preprocessing
+> strategies — users are encouraged to explore alternatives for their specific
+> problem domain.
+
 A walkthrough that prints the shapes returned by every category lives in
 [`example_generate_data.py`](example_generate_data.py); a complete training run on
 Borehole data using FIRE and the baselines is in [`example.py`](example.py).

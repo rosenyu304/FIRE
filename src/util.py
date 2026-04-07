@@ -49,7 +49,7 @@ def get_metrics(y_true, y_pred, y_var):
 
 
 def encode_2fidelity_data(X_lf, y_lf, X_hf, y_hf, X_test, y_test_hf,
-                          preprocess_X=False, preprocess_Y=False):
+                          preprocess_X=True, preprocess_Y="minmax"):
     """
     Encode 2-fidelity data with fidelity column for general multi-fidelity methods.
 
@@ -121,11 +121,12 @@ def encode_2fidelity_data(X_lf, y_lf, X_hf, y_hf, X_test, y_test_hf,
 
 
 def encode_3fidelity_data(X_lf_0, y_lf_0, X_lf_1, y_lf_1, X_hf, y_hf, X_test, y_test_hf,
-                          preprocess_X=False, preprocess_Y=False):
+                          preprocess_X=True, preprocess_Y="minmax"):
     """
     Encode 3-fidelity data with fidelity column.
 
     Fidelity encoding: 0 = lowest, 1 = middle, 2 = highest
+    preprocess_Y: "minmax", "standardize", or False
     """
     if preprocess_X:
         X_all = np.concatenate([X_lf_0, X_lf_1, X_hf, X_test], axis=0)
@@ -137,7 +138,7 @@ def encode_3fidelity_data(X_lf_0, y_lf_0, X_lf_1, y_lf_1, X_hf, y_hf, X_test, y_
         X_hf = (X_hf - minn_) / range_
         X_test = (X_test - minn_) / range_
 
-    if preprocess_Y:
+    if preprocess_Y == "minmax":
         minn_ = np.min([np.min(y_lf_0), np.min(y_lf_1), np.min(y_hf), np.min(y_test_hf)])
         maxx_ = np.max([np.max(y_lf_0), np.max(y_lf_1), np.max(y_hf), np.max(y_test_hf)])
         range_ = maxx_ - minn_ + 1e-12
@@ -145,6 +146,15 @@ def encode_3fidelity_data(X_lf_0, y_lf_0, X_lf_1, y_lf_1, X_hf, y_hf, X_test, y_
         y_lf_1 = (y_lf_1 - minn_) / range_
         y_hf = (y_hf - minn_) / range_
         y_test_hf = (y_test_hf - minn_) / range_
+
+    elif preprocess_Y == "standardize":
+        y_all = np.concatenate([y_lf_0, y_lf_1, y_hf, y_test_hf], axis=0)
+        mean_ = np.mean(y_all)
+        std_ = np.std(y_all) + 1e-12
+        y_lf_0 = (y_lf_0 - mean_) / std_
+        y_lf_1 = (y_lf_1 - mean_) / std_
+        y_hf = (y_hf - mean_) / std_
+        y_test_hf = (y_test_hf - mean_) / std_
 
     X_lf_0_encoded = np.concatenate([X_lf_0, np.zeros((X_lf_0.shape[0], 1))], axis=1)
     X_lf_1_encoded = np.concatenate([X_lf_1, np.ones((X_lf_1.shape[0], 1))], axis=1)
@@ -165,7 +175,7 @@ def encode_3fidelity_data(X_lf_0, y_lf_0, X_lf_1, y_lf_1, X_hf, y_hf, X_test, y_
 def encode_5fidelity_data(X_lf_0, y_lf_0, X_lf_1, y_lf_1,
                           X_lf_2, y_lf_2, X_lf_3, y_lf_3,
                           X_hf, y_hf, X_test, y_test_hf,
-                          preprocess_X=False, preprocess_Y=False):
+                          preprocess_X=True, preprocess_Y="minmax"):
     """
     Encode 5-fidelity data with fidelity column.
 
