@@ -3,6 +3,11 @@
 
 Official implementation of **"FIRE: Multi-fidelity Regression with Distribution-conditioned In-context Learning using Tabular Foundation Models"**.
 
+> [!IMPORTANT]
+>
+> This code base is refactored by AI (Claude), and AI can make mistakes. 
+> Please feel free to open up any issue when you have any trouble or questions regarding the code.
+
 ## 📋 Overview
 
 FIRE (**F**idelity-aware **I**n-context **RE**gression) is a novel multi-fidelity regression framework that leverages Tabular Foundation Models (TFMs) to achieve zero-shot Bayesian inference under extreme data imbalance. Our key contributions include:
@@ -64,7 +69,7 @@ git clone https://github.com/PriorLabs/TabPFN.git --depth 1
 Find the `predict` method and add support for `output_type` parameter:
 
 ```python
-# Around line 150-200 in regressor.py
+# Around the bottom in regressor.py script
 def _logits_to_output(
     *,
     output_type: str,
@@ -75,9 +80,10 @@ def _logits_to_output(
     # ... existing code ...
 
     if output_type == "mean":
-        return predictions.mean(axis=0)
+        output = criterion.mean(logits)
+     # ... existing code ...
     elif output_type == "variance":
-        return predictions.var(axis=0)
+        output = criterion.variance(logits)
     
     # ... existing code ...
 ```
