@@ -28,10 +28,11 @@ pip install -r requirements.txt
 
 ### TabPFN Setup (Required for FIRE_TFM)
 
-Install TabPFN v2.5:
+Install TabPFN:
 ```bash
 pip install tabpfn
 ```
+(Different versions of TabPFN models can be found on https://huggingface.co/Prior-Labs)
 
 ### BNN baseline setup
 
@@ -96,6 +97,7 @@ _OUTPUT_TYPES_BASIC = ("mean", "median", "mode", "variance")
 OutputType = Literal["mean", "median", "mode", "quantiles", "full", "main", "variance"]
 ```
 
+3. To verify, cross-referenced the `_logits_to_output` function, `_OUTPUT_TYPES_BASIC`, and `OutputType` from our original code `src/misc/regressor.py`. If there are still troubles accessing the variance and quantiles through TabPFN, please feel free to open an GitHub issue.
 
 ## 📦 Repository Structure
 
@@ -104,15 +106,18 @@ OutputType = Literal["mean", "median", "mode", "quantiles", "full", "main", "var
 ├── requirements.txt
 ├── example.py              # Usage examples with synthetic data
 └── src/
-    ├── util.py             # Data loading and encoding utilities
-    ├── FIRE.py             # 🔥 FIRE (TFM) and FIRE_GP implementations
-    ├── AR1.py              # AR(1) baseline
-    ├── ResGP.py            # Residual GP baseline
-    ├── NARGP.py            # Non-linear Autoregressive GP
-    ├── ContinuAR.py        # ContinuAR GP
-    ├── MFKG.py             # Multi-fidelity Knowledge Gradient GP (BoTorch)
-    ├── MFBNN.py            # Multi-fidelity Bayesian Neural Network
-    └── MFRNP.py            # Multi-fidelity Residual Neural Process
+    ├── algorithms/
+    │   ├── util.py         # Data loading and encoding utilities
+    │   ├── FIRE.py         # 🔥 FIRE (TFM) and FIRE_GP implementations
+    │   ├── AR1.py          # AR(1) baseline
+    │   ├── ResGP.py        # Residual GP baseline
+    │   ├── NARGP.py        # Non-linear Autoregressive GP
+    │   ├── ContinuAR.py    # ContinuAR GP
+    │   ├── MFKG.py         # Multi-fidelity Knowledge Gradient GP (BoTorch)
+    │   ├── MFBNN.py        # Multi-fidelity Bayesian Neural Network
+    │   └── MFRNP.py        # Multi-fidelity Residual Neural Process
+    └── misc/
+        └── regressor.py    # TabPFN regressor reference (self-edited)
 ```
 
 ## 🚀 Quick Start
@@ -186,7 +191,7 @@ training pool is disjoint from the test set. Sampling is fully reproducible via 
 `seed` argument.
 
 > **Note on preprocessing.** The data generators return raw, unscaled arrays.
-> The encoder helpers in `src/util.py` (`encode_2fidelity_data`,
+> The encoder helpers in `src/algorithms/util.py` (`encode_2fidelity_data`,
 > `encode_3fidelity_data`, `encode_5fidelity_data`) default to **min-max
 > normalization** (`preprocess_X=True`, `preprocess_Y="minmax"`) — both X and y
 > are rescaled to [0, 1] across the LF, HF, and test splits jointly.

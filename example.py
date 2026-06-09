@@ -11,7 +11,7 @@ Note: Some methods require specific hardware (GPU) or packages.
 
 import numpy as np
 import torch
-from src.util import *
+from src.algorithms.util import *
 from data.generate_mf2 import borehole
 
 
@@ -79,7 +79,7 @@ def main():
     # =====================================================
     print("\n[2] Training FIRE...")
     try:
-        from src.FIRE import FIRE
+        from src.algorithms.FIRE import FIRE
         model = FIRE(X_lf, y_lf, X_hf, y_hf, device='cpu', seed=42)
         y_pred, y_var = model.predict(X_test)
         r2, nrmse, nll = get_metrics(y_test_np, y_pred, y_var)
@@ -93,7 +93,7 @@ def main():
     # =====================================================
     print("\n[2] Training FIRE_GP...")
     try:
-        from src.FIRE import FIRE_GP
+        from src.algorithms.FIRE import FIRE_GP
         model = FIRE_GP(X_lf, y_lf, X_hf, y_hf, device='cpu', seed=42)
         y_pred, y_var = model.predict(X_test)
         r2, nrmse, nll = get_metrics(y_test_np, y_pred, y_var)
@@ -107,7 +107,7 @@ def main():
     # =====================================================
     print("\n[3] Training ResGP...")
     try:
-        from src.ResGP import ResGP
+        from src.algorithms.ResGP import ResGP
         model = ResGP(X_lf, y_lf, X_hf, y_hf, device='cpu', seed=42, train_iter=100)
         y_pred, y_var = model.predict(X_test)
         r2, nrmse, nll = get_metrics(y_test_np, y_pred, y_var)
@@ -121,7 +121,7 @@ def main():
     # =====================================================
     print("\n[4] Training NARGP...")
     try:
-        from src.NARGP import NARGP
+        from src.algorithms.NARGP import NARGP
         model = NARGP(X_lf, y_lf, X_hf, y_hf, device='cpu', seed=42, train_iter=100)
         y_pred, y_var = model.predict(X_test)
         r2, nrmse, nll = get_metrics(y_test_np, y_pred, y_var)
@@ -135,7 +135,7 @@ def main():
     # =====================================================
     print("\n[5] Training AR1...")
     try:
-        from src.AR1 import AR1
+        from src.algorithms.AR1 import AR1
         model = AR1(train_X, train_y, fidelity_col_idx=-1, device='cpu', seed=42, train_iter=100)
         y_pred, y_var = model.predict(X_test)
         r2, nrmse, nll = get_metrics(y_test_np, y_pred, y_var)
@@ -149,7 +149,7 @@ def main():
     # =====================================================
     print("\n[6] Training ContinuAR...")
     try:
-        from src.ContinuAR import ContinuAR
+        from src.algorithms.ContinuAR import ContinuAR
         model = ContinuAR(train_X, train_y, fidelity_col_idx=-1, device='cpu', seed=42, train_iter=100)
         y_pred, y_var = model.predict(X_test)
         r2, nrmse, nll = get_metrics(y_test_np, y_pred, y_var)
@@ -163,7 +163,7 @@ def main():
     # =====================================================
     print("\n[7] Training MFRNP...")
     try:
-        from src.MFRNP import MFRNP
+        from src.algorithms.MFRNP import MFRNP
         model = MFRNP(train_X, train_y, fidelity_col_idx=-1, device='cpu', seed=42, train_iter=100)
         y_pred, y_var = model.predict(X_test)
         r2, nrmse, nll = get_metrics(y_test_np, y_pred, y_var)
